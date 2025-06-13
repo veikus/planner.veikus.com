@@ -2,17 +2,7 @@
 
 import React from "react";
 import styles from "./RouteLeg.module.css";
-
-const formatDate = (timestamp, offset = 0) => {
-  const date = new Date(timestamp + offset * 60 * 1000);
-  const DD = date.getUTCDate().toString().padStart(2, '0');
-  const MM = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-  const YYYY = date.getUTCFullYear();
-  const hh = date.getUTCHours().toString().padStart(2, '0');
-  const mm = date.getUTCMinutes().toString().padStart(2, '0');
-
-  return `${DD}.${MM}.${YYYY} ${hh}:${mm}`;
-}
+import { formatDate } from "@/lib/timeFormat";
 
 const RouteLeg = ({selected, options, onChange}) => {
   if (!selected) {
