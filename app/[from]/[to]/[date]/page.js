@@ -6,7 +6,6 @@ import BuyMeACoffee from '@/components/BuyMeACoffee';
 import Notification from '@/components/Notification';
 import styles from '@/app/page.module.css';
 import Link from 'next/link';
-import styles from './page.module.css';
 
 export default async function Results({ params, searchParams }) {
   const min = Number(searchParams.minTransferTime ?? 3 * 3600);

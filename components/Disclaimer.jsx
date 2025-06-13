@@ -4,18 +4,24 @@ import React, { useState, useEffect } from "react";
 import styles from "./Disclaimer.module.css";
 
 const Disclaimer = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const savedVisibility = localStorage.getItem("disclaimerVisible");
-    if (savedVisibility !== null) {
-      setIsVisible(JSON.parse(savedVisibility));
+    if (typeof window !== "undefined") {
+      const savedVisibility = localStorage.getItem("disclaimerVisible");
+      if (savedVisibility !== null) {
+        setIsVisible(JSON.parse(savedVisibility));
+      } else {
+        setIsVisible(true);
+      }
     }
   }, []);
 
   const handleHide = () => {
     setIsVisible(false);
-    localStorage.setItem("disclaimerVisible", false);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("disclaimerVisible", false);
+    }
   };
 
   if (!isVisible) {
@@ -40,9 +46,7 @@ const Disclaimer = () => {
       <p className={styles.disclaimerText}>
         Please note that WizzAir sells separate tickets for each leg of your journey. If you miss a connection due to a delay or any other reason, it is your responsibility to ensure you catch your next flight, as WizzAir does not guarantee connections between their flights.
       </p>
-      <p className={styles.disclaimerText}>
-        We wish you a pleasant journey!
-      </p>
+      <p className={styles.disclaimerText}>We wish you a pleasant journey!</p>
     </div>
   );
 };
