@@ -2,6 +2,16 @@ import { SearchForm, BuyMeACoffee, Notification } from '@/components';
 import { allAirports } from '@/lib/data.mjs';
 import styles from '@/app/page.module.css';
 
+export const metadata = {
+  title: 'Route Planner',
+  description: 'Find flight routes with minimal transfers',
+  openGraph: {
+    title: 'Route Planner',
+    description: 'Find flight routes with minimal transfers',
+    type: 'website',
+  },
+};
+
 export default function Home() {
   return (
     <div className={styles.app}>
