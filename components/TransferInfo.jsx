@@ -1,8 +1,8 @@
 'use client';
 
-import React from "react";
-import styles from "./TransferInfo.module.css";
-import { formatDuration } from "@/lib/timeFormat";
+import React from 'react';
+import styles from './TransferInfo.module.css';
+import { formatDuration } from '@/lib/timeFormat';
 
 const TransferInfo = ({leg1, leg2}) => {
   if (!leg1 || !leg2) {

@@ -1,8 +1,9 @@
 import { pathFinder } from '@/lib/susanin';
 import { allAirports, getAirportByIata } from '@/lib/data.mjs';
+import { airportExists } from '@/lib/airports.js';
 import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import styles from '@/app/page.module.css';
 import { parseMinTransferHours } from '@/lib/config.js';
 
@@ -27,13 +28,24 @@ export function generateMetadata({ params }) {
 }
 
 export default async function Results({ params, searchParams }) {
+  const { from, to, date } = params;
+
+  function isValidDate(value) {
+    const d = new Date(value);
+    return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
+  }
+
+  if (!isValidDate(date) || !airportExists(from) || !airportExists(to)) {
+    notFound();
+  }
+
   const raw = searchParams.minTransferTime ?? '3';
   const minHours = parseMinTransferHours(raw);
   if (minHours === null) {
     redirect('/400');
   }
   const min = minHours * 3600;
-  const routes = await pathFinder(params.from, params.to, params.date, min);
+  const routes = await pathFinder(from, to, date, min);
 
   return (
     <div className={styles.app}>
