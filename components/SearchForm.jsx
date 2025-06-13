@@ -19,9 +19,15 @@ export default function SearchForm({ airports }) {
     if (!from || !to || !date) return;
 
     const maxHours = 72;
-    const minSeconds = Math.min(minTransferTime, maxHours) * 3600;
+    const minHours = Math.min(minTransferTime, maxHours);
 
-    router.push(`/${from}/${to}/${date}?minTransferTime=${minSeconds}`);
+    let url = `/${from}/${to}/${date}`;
+    if (minHours !== 3) {
+      const minSeconds = minHours * 3600;
+      url += `?minTransferTime=${minSeconds}`;
+    }
+
+    router.push(url);
   };
 
   return (
