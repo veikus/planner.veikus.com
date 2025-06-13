@@ -4,7 +4,6 @@ import SearchForm from '@/components/SearchForm';
 import Routes from '@/components/Routes';
 import BuyMeACoffee from '@/components/BuyMeACoffee';
 import Notification from '@/components/Notification';
-import styles from '@/app/page.module.css';
 import Link from 'next/link';
 import styles from './page.module.css';
 
