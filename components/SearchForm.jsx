@@ -5,15 +5,23 @@ import { useRouter } from 'next/navigation';
 import styles from './SearchForm.module.css';
 import { MAX_TRANSFER_HOURS, clampMinTransferHours } from '@/lib/config.js';
 
-export default function SearchForm({ airports }) {
+export default function SearchForm({
+  airports,
+  defaultFrom = '',
+  defaultTo = '',
+  defaultDate,
+  defaultMinTransferTime = 3,
+}) {
   const router = useRouter();
   const today = new Date().toISOString().split('T')[0];
 
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [date, setDate] = useState(today);
-  const [minTransferTime, setMinTransferTime] = useState(3); // часы
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [from, setFrom] = useState(defaultFrom);
+  const [to, setTo] = useState(defaultTo);
+  const [date, setDate] = useState(defaultDate ?? today);
+  const [minTransferTime, setMinTransferTime] = useState(defaultMinTransferTime);
+  const [showAdvanced, setShowAdvanced] = useState(
+    defaultMinTransferTime !== 3
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
