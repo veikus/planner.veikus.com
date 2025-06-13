@@ -1,13 +1,10 @@
 import { pathFinder } from '@/lib/susanin';
 import { allAirports } from '@/lib/data.mjs';
-import SearchForm from '@/components/SearchForm';
-import Routes from '@/components/Routes';
-import BuyMeACoffee from '@/components/BuyMeACoffee';
-import Notification from '@/components/Notification';
+import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
 import Link from 'next/link';
-import styles from './page.module.css';
-import { parseMinTransferHours } from '@/lib/config.js';
 import { redirect } from 'next/navigation';
+import styles from '@/app/page.module.css';
+import { parseMinTransferHours } from '@/lib/config.js';
 
 export default async function Results({ params, searchParams }) {
   const raw = searchParams.minTransferTime ?? '3';
