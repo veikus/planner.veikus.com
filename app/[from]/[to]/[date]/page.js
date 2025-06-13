@@ -8,11 +8,11 @@ import styles from '@/app/page.module.css';
 import { parseMinTransferHours } from '@/lib/config.js';
 
 export async function generateMetadata({ params }) {
-  const fromAirport = getAirportByIata(params.from);
-  const toAirport = getAirportByIata(params.to);
+  const { from, to, date } = await params;
+  const fromAirport = getAirportByIata(from);
+  const toAirport = getAirportByIata(to);
   const fromName = fromAirport ? fromAirport.name : params.from;
   const toName = toAirport ? toAirport.name : params.to;
-  const date = params.date;
   const title = `${fromName} → ${toName} on ${date}`;
   const description = `Routes from ${fromName} to ${toName} on ${date}`;
 
@@ -28,7 +28,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Results({ params, searchParams }) {
-  const { from, to, date } = params;
+  const { from, to, date } = await params;
+  const { minTransferTime } = await searchParams;
 
   function isValidDate(value) {
     const d = new Date(value);
@@ -39,7 +40,7 @@ export default async function Results({ params, searchParams }) {
     notFound();
   }
 
-  const raw = searchParams.minTransferTime ?? '3';
+  const raw = minTransferTime ?? '3';
   const minHours = parseMinTransferHours(raw);
   if (minHours === null) {
     redirect('/400');
@@ -67,7 +68,7 @@ export default async function Results({ params, searchParams }) {
         <BuyMeACoffee/>
       </div>
 
-      <Routes keyPrefix={`${params.from}-${params.to}-${params.date}-${min}`} routes={routes}/>
+      <Routes keyPrefix={`${from}-${to}-${date}-${min}`} routes={routes}/>
     </div>
   );
 }
