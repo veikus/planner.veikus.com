@@ -9,7 +9,7 @@ export default function SearchForm({
   airports,
   defaultFrom = '',
   defaultTo = '',
-  defaultDate,
+  defaultDate = undefined,
   defaultMinTransferTime = 3,
 }) {
   const router = useRouter();
