@@ -1,27 +1,24 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
-import styles from "./Disclaimer.module.css";
+import React, { useState, useEffect } from 'react';
+import styles from './Disclaimer.module.css';
 
 const Disclaimer = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedVisibility = localStorage.getItem("disclaimerVisible");
-      if (savedVisibility !== null) {
-        setIsVisible(JSON.parse(savedVisibility));
-      } else {
+    if (typeof window !== 'undefined') {
+      const isHidden = localStorage.getItem('disclaimerHidden');
+      console.log('xxxx', isHidden);
+      if (isHidden === null) {
         setIsVisible(true);
       }
     }
   }, []);
 
   const handleHide = () => {
+    localStorage.setItem('disclaimerHidden', 'true');
     setIsVisible(false);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("disclaimerVisible", false);
-    }
   };
 
   if (!isVisible) {
