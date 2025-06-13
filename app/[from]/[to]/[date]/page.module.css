@@ -1,0 +1,57 @@
+.app {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.buyMeACoffee {
+  display: flex;
+
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.notification {
+  background-color: #f9f5e3;
+  border: 1px solid #f0c36d;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 16px;
+  text-align: center;
+}
+
+.notification p {
+  margin: 0;
+}
+
+.notification a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.notification a:hover {
+  text-decoration: none;
+}
+
+@media (max-width:480px)  {
+  .buyMeACoffee {
+    width: 100%;
+    position: static;
+    margin-bottom: 20px;
+    justify-content: center
+  }
+}

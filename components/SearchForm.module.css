@@ -1,0 +1,98 @@
+.wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 16px;
+  margin-bottom: 20px;
+
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.formGroup select,
+.formGroup input[type="date"],
+.formGroup input[type="number"] {
+  width: 100%;
+  height: 44px;
+  padding: 8px;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.3s;
+}
+
+.formGroup select:focus,
+.formGroup input[type="date"]:focus,
+.formGroup input[type="number"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.advancedButton {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.minTransferTime {
+  max-width: 100%;
+  width: 350px;
+}
+
+.warningText {
+  color: #ff0000;
+  font-size: 12px;
+  margin-top: -5px;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.searchButton {
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+.searchButton:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width:480px)  {
+  .section {
+    flex-direction: column;
+  }
+}

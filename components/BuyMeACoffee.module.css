@@ -1,0 +1,36 @@
+.container {
+  display: block;
+}
+
+.btn {
+  display: inline-flex;
+  min-width: 210px;
+  height: 50px;
+
+  color: #ffffff;
+  background-color: #5F7FFF;
+
+  border-radius: 12px;
+  border: none;
+
+  font-size: 28px;
+  font-weight: Normal;
+  padding: 0 24px;
+  line-height: 27px;
+  align-items: center;
+  font-family: 'Cookie', cursive;
+}
+
+.beer {
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.txt {
+  width: 100%;
+  display: inline-block;
+
+  margin-left: 8px;
+  line-height: 0;
+  flex-shrink: 0;
+}
