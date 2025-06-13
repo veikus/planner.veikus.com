@@ -9,7 +9,6 @@ const Disclaimer = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const isHidden = localStorage.getItem('disclaimerHidden');
-      console.log('xxxx', isHidden);
       if (isHidden === null) {
         setIsVisible(true);
       }
