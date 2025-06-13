@@ -3,6 +3,7 @@ import { allAirports } from '@/lib/data.mjs';
 import SearchForm from '@/components/SearchForm';
 import Routes from '@/components/Routes';
 import BuyMeACoffee from '@/components/BuyMeACoffee';
+import Link from 'next/link';
 import styles from './page.module.css';
 
 export default async function Results({ params, searchParams }) {
@@ -11,7 +12,9 @@ export default async function Results({ params, searchParams }) {
 
   return (
     <div className={styles.app}>
-      <h1 className={styles.header}>Route Planner</h1>
+      <h1 className={styles.header}>
+        <Link href="/">Route Planner</Link>
+      </h1>
 
       <div className={styles.notification}>
         <p>
