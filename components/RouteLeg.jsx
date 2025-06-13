@@ -1,8 +1,8 @@
 'use client';
 
-import React from "react";
-import styles from "./RouteLeg.module.css";
-import { formatDate } from "@/lib/timeFormat";
+import React from 'react';
+import styles from './RouteLeg.module.css';
+import { formatDate } from '@/lib/timeFormat';
 
 const RouteLeg = ({selected, options, onChange}) => {
   if (!selected) {

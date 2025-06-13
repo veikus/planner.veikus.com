@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from "react";
-import RouteLeg from "./RouteLeg";
-import TransferInfo from "./TransferInfo";
-import styles from "./Route.module.css";
-import { formatDuration } from "@/lib/timeFormat";
+import React, { useState } from 'react';
+import RouteLeg from './RouteLeg';
+import TransferInfo from './TransferInfo';
+import styles from './Route.module.css';
+import { formatDuration } from '@/lib/timeFormat';
 
 const Route = ({ route }) => {
   const fastestRouteLegs = route.fastestRouteLegs;
