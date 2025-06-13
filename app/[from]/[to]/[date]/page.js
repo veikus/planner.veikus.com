@@ -3,7 +3,8 @@ import { allAirports } from '@/lib/data.mjs';
 import SearchForm from '@/components/SearchForm';
 import Routes from '@/components/Routes';
 import BuyMeACoffee from '@/components/BuyMeACoffee';
-import styles from './page.module.css';
+import UpdateNotification from '@/components/UpdateNotification';
+import styles from '@/app/page.module.css';
 
 export default async function Results({ params, searchParams }) {
   const min = Number(searchParams.minTransferTime ?? 3 * 3600);
@@ -13,12 +14,7 @@ export default async function Results({ params, searchParams }) {
     <div className={styles.app}>
       <h1 className={styles.header}>Route Planner</h1>
 
-      <div className={styles.notification}>
-        <p>
-          📅 <strong>Site and timetable updated Jun 13, 2025.</strong> Report about issues:&nbsp;
-          <a href="mailto:artem@veikus.com">artem@veikus.com</a>
-        </p>
-      </div>
+      <UpdateNotification/>
 
       <SearchForm airports={allAirports}/>
 

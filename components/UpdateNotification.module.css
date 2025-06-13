@@ -1,0 +1,24 @@
+.notification {
+  background-color: #f9f5e3;
+  border: 1px solid #f0c36d;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 16px;
+  text-align: center;
+}
+
+.notification p {
+  margin: 0;
+}
+
+.notification a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.notification a:hover {
+  text-decoration: none;
+}
