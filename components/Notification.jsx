@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './UpdateNotification.module.css';
+import styles from './Notification.module.css';
 
-export default function UpdateNotification() {
+export default function Notification() {
   return (
     <div className={styles.notification}>
       <p>
