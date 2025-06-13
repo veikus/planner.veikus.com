@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import RouteLeg from "./RouteLeg";
 import TransferInfo from "./TransferInfo";
 import styles from "./Route.module.css";
+import { formatDuration } from "@/lib/timeFormat";
 
 const Route = ({ route }) => {
   const fastestRouteLegs = route.fastestRouteLegs;
@@ -17,23 +18,12 @@ const Route = ({ route }) => {
   const [availableOptions2, setAvailableOptions2] = useState(options2);
   const [availableOptions3, setAvailableOptions3] = useState(options3);
 
-  const formatTime = (seconds) => {
-    const days = Math.floor(seconds / 86400000);
-    const hours = Math.floor((seconds % 86400000) / 3600000);
-    const minutes = Math.floor((seconds % 3600000) / 60000);
-
-    if (days > 0) {
-      return `${days}d ${hours}h ${minutes}m`;
-    } else {
-      return `${hours}h ${minutes}m`;
-    }
-  };
 
   const calculateTravelTime = () => {
     const start = leg1.std;
     const end = leg3?.sta || leg2?.sta || leg1.sta;
 
-    return formatTime(end - start);
+    return formatDuration(end - start);
   };
 
   const handleChange = (legIndex, event) => {
