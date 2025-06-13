@@ -3,6 +3,8 @@ import { allAirports } from '@/lib/data.mjs';
 import SearchForm from '@/components/SearchForm';
 import Routes from '@/components/Routes';
 import BuyMeACoffee from '@/components/BuyMeACoffee';
+import Notification from '@/components/Notification';
+import styles from '@/app/page.module.css';
 import Link from 'next/link';
 import styles from './page.module.css';
 
@@ -16,12 +18,7 @@ export default async function Results({ params, searchParams }) {
         <Link href="/">Route Planner</Link>
       </h1>
 
-      <div className={styles.notification}>
-        <p>
-          📅 <strong>Site and timetable updated Jun 13, 2025.</strong> Report about issues:&nbsp;
-          <a href="mailto:artem@veikus.com">artem@veikus.com</a>
-        </p>
-      </div>
+        <Notification/>
 
       <SearchForm airports={allAirports}/>
 
