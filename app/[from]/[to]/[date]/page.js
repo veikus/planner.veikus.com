@@ -6,9 +6,16 @@ import BuyMeACoffee from '@/components/BuyMeACoffee';
 import Notification from '@/components/Notification';
 import Link from 'next/link';
 import styles from './page.module.css';
+import { parseMinTransferHours } from '@/lib/config.js';
+import { redirect } from 'next/navigation';
 
 export default async function Results({ params, searchParams }) {
-  const min = Number(searchParams.minTransferTime ?? 3 * 3600);
+  const raw = searchParams.minTransferTime ?? '3';
+  const minHours = parseMinTransferHours(raw);
+  if (minHours === null) {
+    redirect('/400');
+  }
+  const min = minHours * 3600;
   const routes = await pathFinder(params.from, params.to, params.date, min);
 
   return (
