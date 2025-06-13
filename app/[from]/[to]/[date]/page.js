@@ -1,11 +1,31 @@
 import { pathFinder } from '@/lib/susanin';
-import { allAirports } from '@/lib/data.mjs';
+import { allAirports, getAirportByIata } from '@/lib/data.mjs';
 import { airportExists } from '@/lib/airports.js';
 import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
 import styles from '@/app/page.module.css';
 import { parseMinTransferHours } from '@/lib/config.js';
+
+export function generateMetadata({ params }) {
+  const fromAirport = getAirportByIata(params.from);
+  const toAirport = getAirportByIata(params.to);
+  const fromName = fromAirport ? fromAirport.name : params.from;
+  const toName = toAirport ? toAirport.name : params.to;
+  const date = params.date;
+  const title = `${fromName} → ${toName} on ${date}`;
+  const description = `Routes from ${fromName} to ${toName} on ${date}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+    },
+  };
+}
 
 export default async function Results({ params, searchParams }) {
   const { from, to, date } = params;
