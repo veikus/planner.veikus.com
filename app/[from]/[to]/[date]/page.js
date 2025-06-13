@@ -55,7 +55,13 @@ export default async function Results({ params, searchParams }) {
 
         <Notification/>
 
-      <SearchForm airports={allAirports}/>
+      <SearchForm
+        airports={allAirports}
+        defaultFrom={from}
+        defaultTo={to}
+        defaultDate={date}
+        defaultMinTransferTime={minHours}
+      />
 
       <div className={styles.buyMeACoffee}>
         <BuyMeACoffee/>
