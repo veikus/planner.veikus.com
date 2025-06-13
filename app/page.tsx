@@ -1,6 +1,4 @@
-import SearchForm from '@/components/SearchForm';
-import BuyMeACoffee from '@/components/BuyMeACoffee';
-import Notification from '@/components/Notification';
+import { SearchForm, BuyMeACoffee, Notification } from '@/components';
 import { allAirports } from '@/lib/data.mjs';
 import styles from '@/app/page.module.css';
 

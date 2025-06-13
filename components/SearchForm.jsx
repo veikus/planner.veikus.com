@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './SearchForm.module.css';
+import { MAX_TRANSFER_HOURS, clampMinTransferHours } from '@/lib/config.js';
 
 export default function SearchForm({ airports }) {
   const router = useRouter();
@@ -18,13 +19,12 @@ export default function SearchForm({ airports }) {
     e.preventDefault();
     if (!from || !to || !date) return;
 
-    const maxHours = 72;
-    const minHours = Math.min(minTransferTime, maxHours);
+    const maxHours = MAX_TRANSFER_HOURS;
+    const minHours = clampMinTransferHours(minTransferTime);
 
     let url = `/${from}/${to}/${date}`;
     if (minHours !== 3) {
-      const minSeconds = minHours * 3600;
-      url += `?minTransferTime=${minSeconds}`;
+      url += `?minTransferTime=${minHours}`;
     }
 
     router.push(url);
@@ -101,14 +101,14 @@ export default function SearchForm({ airports }) {
           <div className={styles.section}>
             <div className={`${styles.formGroup} ${styles.minTransferTime}`}>
               <label htmlFor="minTransferTime">
-                Minimum Transfer Time (0 – 72 h):
+                {`Minimum Transfer Time (0 – ${MAX_TRANSFER_HOURS} h):`}
               </label>
               <input
                 type="number"
                 id="minTransferTime"
                 value={minTransferTime}
                 min={0}
-                max={72}
+                max={MAX_TRANSFER_HOURS}
                 onChange={e => setMinTransferTime(Number(e.target.value))}
               />
               {minTransferTime < 3 && (
