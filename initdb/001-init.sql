@@ -1,3 +1,10 @@
+CREATE TABLE IF NOT EXISTS airports (
+  iata      CHAR(3)     NOT NULL,
+  name      VARCHAR(64) NOT NULL,
+  timezone  VARCHAR(64) NOT NULL,
+  PRIMARY KEY (iata)
+);
+
 CREATE TABLE IF NOT EXISTS flight_schedule (
   flight_id        VARCHAR(32) NOT NULL,
   flight_number    VARCHAR(16) NOT NULL,

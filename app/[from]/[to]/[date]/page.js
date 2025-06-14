@@ -1,5 +1,6 @@
 import { pathFinder } from '@/lib/susanin';
-import { getAirports, getAirportByIata, airportExists } from '@/lib/data.js';
+import { getAirports, airportExists } from '@/lib/data.js';
+import { getAirportByIata } from '@/lib/db.js';
 import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
@@ -10,8 +11,8 @@ export const revalidate = 86_400;
 
 export async function generateMetadata({ params }) {
   const { from, to, date } = await params;
-  const fromAirport = getAirportByIata(from);
-  const toAirport = getAirportByIata(to);
+  const fromAirport = await getAirportByIata(from);
+  const toAirport = await getAirportByIata(to);
   const fromName = fromAirport ? fromAirport.name : params.from;
   const toName = toAirport ? toAirport.name : params.to;
   const title = `${fromName} → ${toName} on ${date}`;
