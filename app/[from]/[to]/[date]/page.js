@@ -7,6 +7,8 @@ import { redirect, notFound } from 'next/navigation';
 import styles from '@/app/page.module.css';
 import { parseMinTransferHours } from '@/lib/config.js';
 
+export const revalidate = 60 * 60 * 24;
+
 export async function generateMetadata({ params }) {
   const { from, to, date } = await params;
   const fromAirport = getAirportByIata(from);
