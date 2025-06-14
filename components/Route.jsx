@@ -20,8 +20,8 @@ const Route = ({ route }) => {
 
 
   const calculateTravelTime = () => {
-    const start = leg1.std;
-    const end = leg3?.sta || leg2?.sta || leg1.sta;
+    const start = leg1.stdUTC;
+    const end = leg3?.staUTC || leg2?.staUTC || leg1.staUTC;
 
     return formatDuration(end - start);
   };
@@ -38,9 +38,9 @@ const Route = ({ route }) => {
 
     if (legIndex === 0) {
       newLeg1 = newSelection;
-      newAvailableOptions2 = options2.filter(leg => leg.std > newLeg1.sta);
+      newAvailableOptions2 = options2.filter(leg => leg.stdUTC > newLeg1.staUTC);
       newLeg2 = newAvailableOptions2[0];
-      newAvailableOptions3 = options3.filter(leg => leg.std > newLeg2.sta);
+      newAvailableOptions3 = options3.filter(leg => leg.stdUTC > newLeg2.staUTC);
       newLeg3 = newAvailableOptions3[0];
 
       setLeg1(newLeg1);
@@ -52,7 +52,7 @@ const Route = ({ route }) => {
 
     if (legIndex === 1) {
       newLeg2 = newSelection;
-      newAvailableOptions3 = options3.filter(leg => leg.std > newLeg2.sta);
+      newAvailableOptions3 = options3.filter(leg => leg.stdUTC > newLeg2.staUTC);
       newLeg3 = newAvailableOptions3[0];
 
       setLeg2(newLeg2);
