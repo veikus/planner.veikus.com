@@ -7,8 +7,19 @@ RUN npm ci
 # Rebuild the source code only when needed
 FROM node:20-alpine AS builder
 WORKDIR /app
+ARG DB_HOST=db
+ARG DB_PORT=3306
+ARG DB_NAME=flights
+ARG DB_USER=flight_bot
+ARG DB_PASS=secret
+ENV DB_HOST=$DB_HOST \
+    DB_PORT=$DB_PORT \
+    DB_NAME=$DB_NAME \
+    DB_USER=$DB_USER \
+    DB_PASS=$DB_PASS
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm run generate-schedule
 RUN npm run build
 
 # Production image, copy necessary files
