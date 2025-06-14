@@ -1,25 +1,10 @@
 import { DateTime } from 'luxon';
-import mysql from 'mysql2/promise';
+import pool, { endPool } from './lib/db.js';
 
 import { getFlightForTheDay } from './lib/susanin.js';
 import { getFlights } from './lib/data.js'; // твои «сырцы» из data.js
 
-const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS } = process.env;
 
-if (!DB_HOST || !DB_PORT || !DB_NAME || !DB_USER || !DB_PASS) {
-  console.error('Missing database configuration. Set DB_HOST, DB_PORT, DB_NAME, DB_USER and DB_PASS.');
-  process.exit(1);
-}
-
-const pool = mysql.createPool({
-  host: DB_HOST,
-  port: DB_PORT,
-  user: DB_USER,
-  password: DB_PASS,
-  database: DB_NAME,
-  timezone: 'Z',
-  dateStrings: true,
-});
 
 const BATCH = 1_000;    // сколько строк отправляем одним INSERT
 
@@ -90,10 +75,13 @@ async function main() {
   await insertBatch(rows);
 
   console.log('Done!');
+  await endPool();
   process.exit(0);
 }
 
 main().catch(err => {
   console.error(err);
-  process.exit(1);
+  endPool().finally(() => {
+    process.exit(1);
+  });
 });
