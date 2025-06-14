@@ -18,7 +18,14 @@ services:
       - ./initdb:/docker-entrypoint-initdb.d
 
   web:
-    build: .
+    build:
+      context: .
+      args:
+        DB_HOST: db
+        DB_PORT: 3306
+        DB_NAME: flights
+        DB_USER: flight_bot
+        DB_PASS: secret
     depends_on:
       - db
     ports:
