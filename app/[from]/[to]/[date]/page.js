@@ -46,8 +46,7 @@ export default async function Results({ params, searchParams }) {
   if (minHours === null) {
     redirect('/400');
   }
-  const min = minHours * 3600;
-  const routes = await pathFinder(from, to, date, min);
+  const routes = await pathFinder(from, to, date, minHours);
 
   return (
     <div className={styles.app}>
@@ -69,7 +68,7 @@ export default async function Results({ params, searchParams }) {
         <BuyMeACoffee/>
       </div>
 
-      <Routes keyPrefix={`${from}-${to}-${date}-${min}`} routes={routes}/>
+      <Routes keyPrefix={`${from}-${to}-${date}-${minHours}`} routes={routes}/>
     </div>
   );
 }
