@@ -1,6 +1,5 @@
 import { pathFinder } from '@/lib/susanin';
-import { allAirports, getAirportByIata } from '@/lib/data.mjs';
-import { airportExists } from '@/lib/airports.js';
+import { getAirports, getAirportByIata, airportExists } from '@/lib/data.js';
 import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
@@ -59,7 +58,7 @@ export default async function Results({ params, searchParams }) {
         <Notification/>
 
       <SearchForm
-        airports={allAirports}
+        airports={getAirports()}
         defaultFrom={from}
         defaultTo={to}
         defaultDate={date}

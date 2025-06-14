@@ -1,5 +1,5 @@
 import { SearchForm, BuyMeACoffee, Notification } from '@/components';
-import { allAirports } from '@/lib/data.mjs';
+import { getAirports } from '@/lib/data.js';
 import styles from '@/app/page.module.css';
 
 export const revalidate = 86_400;
@@ -21,7 +21,7 @@ export default function Home() {
 
         <Notification/>
 
-      <SearchForm airports={allAirports} />
+      <SearchForm airports={getAirports()} />
 
       <div className={styles.buyMeACoffee}>
         <BuyMeACoffee />
