@@ -3,7 +3,10 @@ import pool, { endPool } from '../lib/db.js';
 import { getFlights } from '../lib/data.js';
 
 async function upsertAirports(rows) {
-  if (!rows.length) return;
+  if (!rows.length) {
+    return;
+  }
+
   const sql = `
     INSERT INTO airports (iata, name, timezone)
     VALUES ?
@@ -17,7 +20,10 @@ async function upsertAirports(rows) {
 const BATCH = 1_000; // How many rows to insert at once
 
 async function insertBatch(rows) {
-  if (!rows.length) return;
+  if (!rows.length) {
+    return;
+  }
+
   const sql = `
     INSERT INTO flight_schedule (
       flight_id, flight_number, flight_date,
@@ -86,6 +92,7 @@ export function getFlightForTheDay(flightData, date) {
 async function main() {
   const flights = getFlights();
 
+  // --- Airports ---
   const airportsMap = new Map();
   for (const data of flights) {
     const { from, to } = data;
@@ -98,6 +105,7 @@ async function main() {
   }
   await upsertAirports([...airportsMap.values()]);
 
+  // --- Flight Schedule ---
   const today   = DateTime.utc();
 
   const start = today.minus({ years: 1 }).startOf('day');
@@ -134,11 +142,10 @@ async function main() {
       ]);
 
       if (rows.length >= BATCH) {
-        await insertBatch(rows.splice(0, rows.length)); // отправили и очистили
+        await insertBatch(rows.splice(0, rows.length));
       }
     }
   }
-  // последние остатки
   await insertBatch(rows);
 
   console.log('Done!');
