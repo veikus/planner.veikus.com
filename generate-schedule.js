@@ -4,14 +4,21 @@ import mysql from 'mysql2/promise';
 import { getFlightForTheDay } from './lib/susanin.js';
 import { getFlights } from './lib/data.js'; // твои «сырцы» из data.js
 
+const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS } = process.env;
+
+if (!DB_HOST || !DB_PORT || !DB_NAME || !DB_USER || !DB_PASS) {
+  console.error('Missing database configuration. Set DB_HOST, DB_PORT, DB_NAME, DB_USER and DB_PASS.');
+  process.exit(1);
+}
+
 const pool = mysql.createPool({
-  host:     '127.0.0.1',
-  port:     '13306',
-  user:     'flight_bot',
-  password: 'secret',
-  database: 'flights',
-  timezone: 'Z',        // получать/отдавать DATETIME как UTC-строки
-  dateStrings: true,    // не превратить DATE в JS-Date с локальным смещением
+  host: DB_HOST,
+  port: DB_PORT,
+  user: DB_USER,
+  password: DB_PASS,
+  database: DB_NAME,
+  timezone: 'Z',
+  dateStrings: true,
 });
 
 const BATCH = 1_000;    // сколько строк отправляем одним INSERT
