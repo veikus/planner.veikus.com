@@ -2,6 +2,18 @@ import { DateTime } from 'luxon';
 import pool, { endPool } from '../lib/db.js';
 import { getFlights } from '../lib/data.js';
 
+async function upsertAirports(rows) {
+  if (!rows.length) return;
+  const sql = `
+    INSERT INTO airports (iata, name, timezone)
+    VALUES ?
+    ON DUPLICATE KEY UPDATE
+      name     = VALUES(name),
+      timezone = VALUES(timezone)
+  `;
+  await pool.query(sql, [rows]);
+}
+
 const BATCH = 1_000; // How many rows to insert at once
 
 async function insertBatch(rows) {
@@ -73,6 +85,19 @@ export function getFlightForTheDay(flightData, date) {
 
 async function main() {
   const flights = getFlights();
+
+  const airportsMap = new Map();
+  for (const data of flights) {
+    const { from, to } = data;
+    if (from) {
+      airportsMap.set(from.iata, [from.iata, from.name, from.timezone]);
+    }
+    if (to) {
+      airportsMap.set(to.iata, [to.iata, to.name, to.timezone]);
+    }
+  }
+  await upsertAirports([...airportsMap.values()]);
+
   const today   = DateTime.utc();
 
   const start = today.minus({ years: 1 }).startOf('day');
