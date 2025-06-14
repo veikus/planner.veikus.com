@@ -1,6 +1,5 @@
 import { pathFinder } from '@/lib/susanin';
-import { getAirports, airportExists } from '@/lib/data.js';
-import { getAirportByIata } from '@/lib/db.js';
+import { getAirports, airportExists, getAirportByIata } from '@/lib/db.js';
 import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
@@ -33,12 +32,18 @@ export default async function Results({ params, searchParams }) {
   const { from, to, date } = await params;
   const { minTransferTime } = await searchParams;
 
+  const airports = await getAirports();
+
   function isValidDate(value) {
     const d = new Date(value);
     return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
   }
 
-  if (!isValidDate(date) || !airportExists(from) || !airportExists(to)) {
+  if (
+    !isValidDate(date) ||
+    !(await airportExists(from)) ||
+    !(await airportExists(to))
+  ) {
     notFound();
   }
 
@@ -58,7 +63,7 @@ export default async function Results({ params, searchParams }) {
         <Notification/>
 
       <SearchForm
-        airports={getAirports()}
+        airports={airports}
         defaultFrom={from}
         defaultTo={to}
         defaultDate={date}
