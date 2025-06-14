@@ -44,3 +44,17 @@ docker-compose up -d
 ```
 
 The application will be available on port `3000`.
+
+## Environment Variables
+
+Database connection parameters are configured with the following variables:
+
+| Variable  | Description                      |
+|-----------|----------------------------------|
+| `DB_HOST` | Database host (e.g. `127.0.0.1`) |
+| `DB_PORT` | Database port (e.g. `13306`)     |
+| `DB_NAME` | Database name                    |
+| `DB_USER` | Database user                    |
+| `DB_PASS` | Database password                |
+
+All of these variables are required. You can provide them in a `.env` file or rely on `docker-compose` which sets them automatically.
