@@ -1,11 +1,11 @@
 # Install dependencies only when needed
-FROM node:20-alpine AS deps
+FROM node:22.16.0-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 
 # Rebuild the source code only when needed
-FROM node:20-alpine AS builder
+FROM node:22.16.0-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -22,7 +22,7 @@ ENV DB_HOST=$DB_HOST \
 RUN npm run build
 
 # Production image, copy necessary files
-FROM node:20-alpine AS runner
+FROM node:22.16.0-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/next.config.mjs ./next.config.mjs
