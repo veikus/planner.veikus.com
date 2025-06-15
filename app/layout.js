@@ -13,6 +13,7 @@ const geistMono = localFont({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://planner.veikus.com'),
   title: {
     default: 'Route Planner',
     template: '%s | Route Planner',
