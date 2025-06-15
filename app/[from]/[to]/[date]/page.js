@@ -54,6 +54,15 @@ export default async function Results({ params, searchParams }) {
   }
   const routes = await pathFinder(from, to, date, minHours);
 
+  const prevDate = new Date(date);
+  prevDate.setDate(prevDate.getDate() - 1);
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + 1);
+  const query = minHours !== 3 ? `?minTransferTime=${minHours}` : '';
+
+  const prevUrl = `/${from}/${to}/${prevDate.toISOString().slice(0, 10)}${query}`;
+  const nextUrl = `/${from}/${to}/${nextDate.toISOString().slice(0, 10)}${query}`;
+
   return (
     <div className={styles.app}>
       <h1 className={styles.header}>
@@ -69,6 +78,11 @@ export default async function Results({ params, searchParams }) {
         defaultDate={date}
         defaultMinTransferTime={minHours}
       />
+
+      <div className={styles.dayNav}>
+        <Link href={prevUrl}>← Previous Day</Link>
+        <Link href={nextUrl}>Next Day →</Link>
+      </div>
 
       <div className={styles.buyMeACoffee}>
         <BuyMeACoffee/>

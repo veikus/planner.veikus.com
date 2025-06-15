@@ -22,6 +22,22 @@
   right: 10px;
 }
 
+.dayNav {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.dayNav a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.dayNav a:hover {
+  text-decoration: underline;
+}
+
 
 @media (max-width:480px)  {
   .buyMeACoffee {
