@@ -1,9 +1,24 @@
-version: '3'
+version: '3.9'
+
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        DB_HOST: host.docker.internal
+        DB_PORT: 3306
+        DB_NAME: planner
+        DB_USER: planner
+        DB_PASS: planner
     ports:
       - "13000:3000"
+    restart: unless-stopped
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3306
+      - DB_NAME=planner
+      - DB_USER=planner
+      - DB_PASS=planner
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

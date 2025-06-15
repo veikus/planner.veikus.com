@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './RouteLeg.module.css';
-import { formatDate } from '@/lib/timeFormat';
+import { formatDuration } from '@/lib/timeFormat';
 
 const RouteLeg = ({selected, options, onChange}) => {
   if (!selected) {
@@ -15,16 +15,16 @@ const RouteLeg = ({selected, options, onChange}) => {
         {selected.fromAirport} - {selected.toAirport}
       </p>
       <p className={styles.text}>
-        <span className={styles.textBold}>Departure:</span> {formatDate(selected.std, selected.stdOffset)}
+        <span className={styles.textBold}>Departure:</span> {selected.std}
       </p>
       <p className={styles.text}>
-        <span className={styles.textBold}>Arrival:</span> {formatDate(selected.sta, selected.staOffset)}
+        <span className={styles.textBold}>Arrival:</span> {selected.sta}
       </p>
       <p className={styles.text}>
         <span className={styles.textBold}>Flight:</span> {selected.flightNumber}
       </p>
       <p className={styles.text}>
-        <span className={styles.textBold}>Flight time:</span> {selected.flightTime}
+        <span className={styles.textBold}>Flight time:</span> {formatDuration(selected.flightTime * 60_000)}
       </p>
       <select
         className={styles.legSelect}
@@ -34,7 +34,7 @@ const RouteLeg = ({selected, options, onChange}) => {
         {
           options.map((flight, routeIndex) => (
             <option key={flight.id} value={flight.id}>
-              {flight.flightNumber} {formatDate(flight.std, flight.stdOffset)}
+              {flight.flightNumber} {flight.std}
             </option>
           ))
         }

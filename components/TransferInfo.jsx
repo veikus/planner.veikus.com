@@ -12,7 +12,7 @@ const TransferInfo = ({leg1, leg2}) => {
   return (
     <div className={styles.wrapper}>
       <p className={styles.title}>Transfer</p>
-      <p className={styles.text}>{formatDuration(leg2.std - leg1.sta)}</p>
+      <p className={styles.text}>{formatDuration(leg2.stdUTC - leg1.staUTC)}</p>
     </div>
   )
 }

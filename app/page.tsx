@@ -1,5 +1,5 @@
 import { SearchForm, BuyMeACoffee, Notification } from '@/components';
-import { allAirports } from '@/lib/data.mjs';
+import { getAirports } from '@/lib/db.js';
 import styles from '@/app/page.module.css';
 
 export const revalidate = 86_400;
@@ -14,14 +14,15 @@ export const metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const airports = await getAirports();
   return (
     <div className={styles.app}>
       <h1 className={styles.header}>Route Planner</h1>
 
         <Notification/>
 
-      <SearchForm airports={allAirports} />
+      <SearchForm airports={airports} />
 
       <div className={styles.buyMeACoffee}>
         <BuyMeACoffee />
