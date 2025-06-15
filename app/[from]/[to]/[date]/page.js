@@ -69,7 +69,7 @@ export default async function Results({ params, searchParams }) {
         <Link href="/">Route Planner</Link>
       </h1>
 
-        <Notification/>
+      <Notification/>
 
       <SearchForm
         airports={airports}
@@ -79,13 +79,13 @@ export default async function Results({ params, searchParams }) {
         defaultMinTransferTime={minHours}
       />
 
+      <div className={styles.buyMeACoffee}>
+        <BuyMeACoffee/>
+      </div>
+
       <div className={styles.dayNav}>
         <Link href={prevUrl}>← Previous Day</Link>
         <Link href={nextUrl}>Next Day →</Link>
-      </div>
-
-      <div className={styles.buyMeACoffee}>
-        <BuyMeACoffee/>
       </div>
 
       <Routes keyPrefix={`${from}-${to}-${date}-${minHours}`} routes={routes}/>
