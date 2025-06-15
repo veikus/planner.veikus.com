@@ -54,13 +54,22 @@ export default async function Results({ params, searchParams }) {
   }
   const routes = await pathFinder(from, to, date, minHours);
 
+  const prevDate = new Date(date);
+  prevDate.setDate(prevDate.getDate() - 1);
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + 1);
+  const query = minHours !== 3 ? `?minTransferTime=${minHours}` : '';
+
+  const prevUrl = `/${from}/${to}/${prevDate.toISOString().slice(0, 10)}${query}`;
+  const nextUrl = `/${from}/${to}/${nextDate.toISOString().slice(0, 10)}${query}`;
+
   return (
     <div className={styles.app}>
       <h1 className={styles.header}>
         <Link href="/">Route Planner</Link>
       </h1>
 
-        <Notification/>
+      <Notification/>
 
       <SearchForm
         airports={airports}
@@ -72,6 +81,11 @@ export default async function Results({ params, searchParams }) {
 
       <div className={styles.buyMeACoffee}>
         <BuyMeACoffee/>
+      </div>
+
+      <div className={styles.dayNav}>
+        <Link href={prevUrl}>← Previous Day</Link>
+        <Link href={nextUrl}>Next Day →</Link>
       </div>
 
       <Routes keyPrefix={`${from}-${to}-${date}-${minHours}`} routes={routes}/>
