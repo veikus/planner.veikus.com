@@ -2,7 +2,8 @@
 FROM node:22.16.0-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+# Install dev deps too (tailwind/postcss) even if NODE_ENV=production is set by the build environment.
+RUN npm ci --include=dev
 
 # Rebuild the source code only when needed
 FROM node:22.16.0-alpine AS builder
@@ -20,6 +21,7 @@ ENV DB_HOST=$DB_HOST \
     DB_USER=$DB_USER \
     DB_PASS=$DB_PASS
 RUN npm run build
+RUN npm prune --omit=dev
 
 # Production image, copy necessary files
 FROM node:22.16.0-alpine AS runner
