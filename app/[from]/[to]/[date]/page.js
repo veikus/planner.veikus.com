@@ -94,8 +94,8 @@ export default async function Results({ params, searchParams }) {
       </div>
 
       <div className={styles.dayNav}>
-        <Link href={prevUrl}>← Previous Day</Link>
-        <Link href={nextUrl}>Next Day →</Link>
+        <Link href={prevUrl} rel="nofollow">← Previous Day</Link>
+        <Link href={nextUrl} rel="nofollow">Next Day →</Link>
       </div>
 
       <Routes keyPrefix={`${from}-${to}-${date}-${minHours}`} routes={routes}/>
