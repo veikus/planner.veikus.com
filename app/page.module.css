@@ -2,12 +2,13 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 36px 24px 90px;
+  position: relative;
 }
 
 .buyMeACoffee {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 12px;
+  position: absolute;
+  top: 36px;
+  right: 24px;
 }
 
 .dayNav {
@@ -42,8 +43,10 @@
   font-size: 14px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 800px) {
   .buyMeACoffee {
+    position: static;
+    display: flex;
     justify-content: center;
     margin-bottom: 20px;
   }
