@@ -12,7 +12,7 @@
   --warn-ink: oklch(0.42 0.1 70);
   --warn-strong: oklch(0.56 0.15 45);
   --accent: #3B5BDB;
-  --font-heading: 'Sora', sans-serif;
+  --font-heading: var(--font-sora), sans-serif;
 }
 
 /* CSS Reset */

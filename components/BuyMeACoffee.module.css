@@ -18,7 +18,7 @@
   font-size: 22px;
   font-weight: normal;
   padding: 0 20px;
-  font-family: 'Cookie', cursive;
+  font-family: var(--font-cookie), cursive;
 }
 
 .beer {
