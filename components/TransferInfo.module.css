@@ -1,31 +1,43 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-
-  text-align: center;
-  padding: 10px;
-
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 130px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
 }
 
-.title {
-  margin-bottom: 5px;
-  font-weight: bold;
+.label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
-.text {
-  margin: 0;
+.duration {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 15px;
 }
 
-@media (max-width:480px)  {
+.shortBadge {
+  background: var(--warn-bg);
+  color: var(--warn-strong);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
   .wrapper {
     flex-direction: row;
-  }
-
-  .title {
-    margin-bottom: 0;
-    margin-right: 5px;
+    flex-wrap: wrap;
+    min-width: 0;
   }
 }

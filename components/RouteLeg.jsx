@@ -2,42 +2,55 @@
 
 import React from 'react';
 import styles from './RouteLeg.module.css';
-import { formatDuration } from '@/lib/timeFormat';
 
-const RouteLeg = ({selected, options, onChange}) => {
-  if (!selected) {
-    return null;
-  }
-
+const RouteLeg = ({
+  depTime,
+  depCode,
+  arrTime,
+  arrCode,
+  arrDayBadge,
+  flightNumber,
+  durationLabel,
+  options,
+  selectedId,
+  onChange,
+}) => {
   return (
     <div className={styles.leg}>
-      <p className={styles.title}>
-        {selected.fromAirport} - {selected.toAirport}
-      </p>
-      <p className={styles.text}>
-        <span className={styles.textBold}>Departure:</span> {selected.std}
-      </p>
-      <p className={styles.text}>
-        <span className={styles.textBold}>Arrival:</span> {selected.sta}
-      </p>
-      <p className={styles.text}>
-        <span className={styles.textBold}>Flight:</span> {selected.flightNumber}
-      </p>
-      <p className={styles.text}>
-        <span className={styles.textBold}>Flight time:</span> {formatDuration(selected.flightTime * 60_000)}
-      </p>
+      <div className={styles.row}>
+        <div className={styles.side}>
+          <span className={styles.time}>{depTime}</span>
+          <span className={styles.code}>{depCode}</span>
+        </div>
+
+        <div className={styles.middle}>
+          <span className={styles.durationLabel}>{durationLabel}</span>
+          <div className={styles.line}>
+            <span className={styles.plane}>✈</span>
+          </div>
+        </div>
+
+        <div className={`${styles.side} ${styles.sideEnd}`}>
+          <span className={styles.timeWithBadge}>
+            <span className={styles.time}>{arrTime}</span>
+            {arrDayBadge && <sup className={styles.dayBadge}>{arrDayBadge}</sup>}
+          </span>
+          <span className={styles.code}>{arrCode}</span>
+        </div>
+      </div>
+
+      <div className={styles.flightNumber}>Flight {flightNumber}</div>
+
       <select
         className={styles.legSelect}
-        onChange={(e) => onChange(e)}
-        value={selected.id}
+        value={selectedId}
+        onChange={onChange}
       >
-        {
-          options.map((flight, routeIndex) => (
-            <option key={flight.id} value={flight.id}>
-              {flight.flightNumber} {flight.std}
-            </option>
-          ))
-        }
+        {options.map(option => (
+          <option key={option.id} value={option.id}>
+            {option.label}
+          </option>
+        ))}
       </select>
     </div>
   );

@@ -2,19 +2,15 @@
 
 import React from 'react';
 import styles from './TransferInfo.module.css';
-import { formatDuration } from '@/lib/timeFormat';
 
-const TransferInfo = ({leg1, leg2}) => {
-  if (!leg1 || !leg2) {
-    return null;
-  }
-
+const TransferInfo = ({ code, durationLabel, isShort }) => {
   return (
     <div className={styles.wrapper}>
-      <p className={styles.title}>Transfer</p>
-      <p className={styles.text}>{formatDuration(leg2.stdUTC - leg1.staUTC)}</p>
+      <span className={styles.label}>Transfer · {code}</span>
+      <span className={styles.duration}>{durationLabel}</span>
+      {isShort && <span className={styles.shortBadge}>Short connection</span>}
     </div>
-  )
-}
+  );
+};
 
 export default TransferInfo;

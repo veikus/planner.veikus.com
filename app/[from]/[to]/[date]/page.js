@@ -1,6 +1,7 @@
+import { DateTime } from 'luxon';
 import { pathFinder } from '@/lib/susanin';
 import { getAirports, airportExists, getAirportByIata, getScheduleDateRange } from '@/lib/db.js';
-import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
+import { SearchForm, Routes, BuyMeACoffee, Notification, Disclaimer, Header } from '@/components';
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
 import styles from '@/app/page.module.css';
@@ -72,12 +73,15 @@ export default async function Results({ params, searchParams }) {
 
   const prevUrl = `/${from}/${to}/${prevDate.toISOString().slice(0, 10)}${query}`;
   const nextUrl = `/${from}/${to}/${nextDate.toISOString().slice(0, 10)}${query}`;
+  const dayLabel = DateTime.fromISO(date, { zone: 'utc' }).toFormat('ccc, dd LLL yyyy');
 
   return (
     <div className={styles.app}>
-      <h1 className={styles.header}>
-        <Link href="/">Route Planner</Link>
-      </h1>
+      <div className={styles.buyMeACoffee}>
+        <BuyMeACoffee/>
+      </div>
+
+      <Header/>
 
       <Notification/>
 
@@ -89,13 +93,12 @@ export default async function Results({ params, searchParams }) {
         defaultMinTransferTime={minHours}
       />
 
-      <div className={styles.buyMeACoffee}>
-        <BuyMeACoffee/>
-      </div>
+      <Disclaimer/>
 
       <div className={styles.dayNav}>
-        <Link href={prevUrl} rel="nofollow">← Previous Day</Link>
-        <Link href={nextUrl} rel="nofollow">Next Day →</Link>
+        <Link href={prevUrl} rel="nofollow">← Previous day</Link>
+        <span className={styles.dayLabel}>{dayLabel}</span>
+        <Link href={nextUrl} rel="nofollow">Next day →</Link>
       </div>
 
       <Routes keyPrefix={`${from}-${to}-${date}-${minHours}`} routes={routes}/>
