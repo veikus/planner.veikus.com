@@ -1,5 +1,5 @@
 import { pathFinder } from '@/lib/susanin';
-import { getAirports, airportExists, getAirportByIata, getScheduleDateRange } from '@/lib/db.js';
+import { getAirports, airportExists, getAirportByIata, getScheduleDateRange, getScheduleDateBounds } from '@/lib/db.js';
 import { SearchForm, Routes, BuyMeACoffee, Notification } from '@/components';
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
@@ -33,6 +33,7 @@ export default async function Results({ params, searchParams }) {
   const { minTransferTime } = await searchParams;
 
   const airports = await getAirports();
+  const { minDate, maxDate } = await getScheduleDateBounds();
 
   function isValidDate(value) {
     const d = new Date(value);
@@ -87,6 +88,8 @@ export default async function Results({ params, searchParams }) {
         defaultTo={to}
         defaultDate={date}
         defaultMinTransferTime={minHours}
+        minDate={minDate}
+        maxDate={maxDate}
       />
 
       <div className={styles.buyMeACoffee}>

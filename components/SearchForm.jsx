@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './SearchForm.module.css';
 import { MAX_TRANSFER_HOURS, clampMinTransferHours } from '@/lib/config.js';
+import { getLocalDateString } from '@/lib/timeFormat.js';
 
 export default function SearchForm({
   airports,
@@ -11,9 +12,11 @@ export default function SearchForm({
   defaultTo = '',
   defaultDate = undefined,
   defaultMinTransferTime = 3,
+  minDate = undefined,
+  maxDate = undefined,
 }) {
   const router = useRouter();
-  const today = new Date().toISOString().split('T')[0];
+  const today = getLocalDateString();
 
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(defaultTo);
@@ -27,7 +30,6 @@ export default function SearchForm({
     e.preventDefault();
     if (!from || !to || !date) return;
 
-    const maxHours = MAX_TRANSFER_HOURS;
     const minHours = clampMinTransferHours(minTransferTime);
 
     let url = `/${from}/${to}/${date}`;
@@ -83,6 +85,8 @@ export default function SearchForm({
               type="date"
               id="date"
               value={date}
+              min={minDate}
+              max={maxDate}
               onChange={e => setDate(e.target.value)}
             />
           </div>
