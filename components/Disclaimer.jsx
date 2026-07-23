@@ -1,23 +1,29 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useSyncExternalStore } from 'react';
 import styles from './Disclaimer.module.css';
 
-const Disclaimer = () => {
-  const [isVisible, setIsVisible] = useState(false);
+let hideListeners = [];
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const isHidden = localStorage.getItem('disclaimerHidden');
-      if (isHidden === null) {
-        setIsVisible(true);
-      }
-    }
-  }, []);
+const subscribe = (listener) => {
+  hideListeners.push(listener);
+  return () => {
+    hideListeners = hideListeners.filter((l) => l !== listener);
+  };
+};
+
+const getSnapshot = () => localStorage.getItem('disclaimerHidden') === null;
+
+// Server-rendered HTML has no access to localStorage, so the banner is
+// hidden during SSR and appears on the client after hydration.
+const getServerSnapshot = () => false;
+
+const Disclaimer = () => {
+  const isVisible = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const handleHide = () => {
     localStorage.setItem('disclaimerHidden', 'true');
-    setIsVisible(false);
+    hideListeners.forEach((listener) => listener());
   };
 
   if (!isVisible) {
