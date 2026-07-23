@@ -4,82 +4,106 @@ import React, { useState } from 'react';
 import RouteLeg from './RouteLeg';
 import TransferInfo from './TransferInfo';
 import styles from './Route.module.css';
-import { formatDuration } from '@/lib/timeFormat';
+import { formatDuration, localTime, localDayDiff } from '@/lib/timeFormat';
+import { SHORT_TRANSFER_THRESHOLD_MINUTES } from '@/lib/config';
+
+const availableOptionsFor = (legOptions, legIndex, prevLeg) => {
+  if (legIndex === 0) return legOptions[0];
+  const filtered = legOptions[legIndex].filter(leg => leg.stdUTC > prevLeg.staUTC);
+  return filtered.length ? filtered : legOptions[legIndex];
+};
 
 const Route = ({ route }) => {
-  const fastestRouteLegs = route.fastestRouteLegs;
-  const options1 = route.legs[0];
-  const options2 = route.legs[1];
-  const options3 = route.legs[2];
-  const [leg1, setLeg1] = useState(options1.find(leg => leg.id === fastestRouteLegs[0].id));
-  const [leg2, setLeg2] = useState(options2.find(leg => leg.id === fastestRouteLegs[1].id));
-  const [leg3, setLeg3] = useState(options3.find(leg => leg.id === fastestRouteLegs[2].id));
-  const availableOptions1 = options1;
-  const [availableOptions2, setAvailableOptions2] = useState(options2);
-  const [availableOptions3, setAvailableOptions3] = useState(options3);
+  const legsCount = route.fastestRouteLegs.length;
+  const legOptions = route.legs.slice(0, legsCount);
 
+  const [selectedIds, setSelectedIds] = useState(
+    route.fastestRouteLegs.map(leg => leg.id)
+  );
 
-  const calculateTravelTime = () => {
-    const start = leg1.stdUTC;
-    const end = leg3?.staUTC || leg2?.staUTC || leg1.staUTC;
+  const selectedLegs = selectedIds.map((id, i) => legOptions[i].find(leg => leg.id === id));
 
-    return formatDuration(end - start);
+  const handleChange = (legIndex, newId) => {
+    setSelectedIds(prevIds => {
+      const nextIds = [...prevIds];
+      nextIds[legIndex] = newId;
+
+      let prevLeg = legOptions[legIndex].find(leg => leg.id === newId);
+      for (let i = legIndex + 1; i < legsCount; i++) {
+        const options = availableOptionsFor(legOptions, i, prevLeg);
+        prevLeg = options[0];
+        nextIds[i] = prevLeg.id;
+      }
+
+      return nextIds;
+    });
   };
 
-  const handleChange = (legIndex, event) => {
-    const newId = event.target.value;
-    const newSelection = route.legs[legIndex].find(leg => leg.id === newId);
+  const stops = legsCount - 1;
+  const stopsLabel = stops === 0 ? 'Direct' : stops === 1 ? '1 stop' : `${stops} stops`;
+  const totalDuration = formatDuration(
+    selectedLegs[legsCount - 1].staUTC - selectedLegs[0].stdUTC
+  );
 
-    let newLeg1 = leg1;
-    let newLeg2 = leg2;
-    let newLeg3 = leg3;
-    let newAvailableOptions2 = availableOptions2;
-    let newAvailableOptions3 = availableOptions3;
+  const items = [];
+  selectedLegs.forEach((leg, i) => {
+    const options = availableOptionsFor(legOptions, i, selectedLegs[i - 1]).map(option => {
+      const dayOffset = localDayDiff(selectedLegs[0].std, option.std);
+      return {
+        id: option.id,
+        label: `${option.flightNumber} · ${localTime(option.std)}${dayOffset > 0 ? ` (+${dayOffset})` : ''}`,
+      };
+    });
 
-    if (legIndex === 0) {
-      newLeg1 = newSelection;
-      newAvailableOptions2 = options2.filter(leg => leg.stdUTC > newLeg1.staUTC);
-      newLeg2 = newAvailableOptions2[0];
-      newAvailableOptions3 = options3.filter(leg => leg.stdUTC > newLeg2.staUTC);
-      newLeg3 = newAvailableOptions3[0];
+    const legDayDiff = localDayDiff(leg.std, leg.sta);
+    items.push({
+      type: 'leg',
+      itemKey: `leg-${i}`,
+      depTime: localTime(leg.std),
+      depCode: leg.fromAirport,
+      arrTime: localTime(leg.sta),
+      arrCode: leg.toAirport,
+      arrDayBadge: legDayDiff > 0 ? `+${legDayDiff}` : '',
+      flightNumber: leg.flightNumber,
+      durationLabel: formatDuration(leg.flightTime * 60_000),
+      options,
+      selectedId: leg.id,
+      onChange: (e) => handleChange(i, e.target.value),
+    });
 
-      setLeg1(newLeg1);
-      setLeg2(newLeg2);
-      setLeg3(newLeg3);
-      setAvailableOptions2(newAvailableOptions2);
-      setAvailableOptions3(newAvailableOptions3);
+    if (i < legsCount - 1) {
+      const next = selectedLegs[i + 1];
+      const transferMs = next.stdUTC - leg.staUTC;
+      items.push({
+        type: 'transfer',
+        itemKey: `transfer-${i}`,
+        code: leg.toAirport,
+        durationLabel: formatDuration(transferMs),
+        isShort: transferMs / 60_000 < SHORT_TRANSFER_THRESHOLD_MINUTES,
+      });
     }
-
-    if (legIndex === 1) {
-      newLeg2 = newSelection;
-      newAvailableOptions3 = options3.filter(leg => leg.stdUTC > newLeg2.staUTC);
-      newLeg3 = newAvailableOptions3[0];
-
-      setLeg2(newLeg2);
-      setLeg3(newLeg3);
-      setAvailableOptions3(newAvailableOptions3);
-    }
-
-    if (legIndex === 2) {
-      newLeg3 = newSelection;
-      setLeg3(newLeg3);
-    }
-  };
+  });
 
   return (
     <div className={styles.route}>
-        <div className={styles.header}>
-          <div>{route.cities.join(' - ')}</div>
-          <div className={styles.travelTime}>{calculateTravelTime()}</div>
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <span className={styles.cities}>{route.cities.join(' → ')}</span>
+          <span className={styles.stopsBadge}>{stopsLabel}</span>
         </div>
+        <div className={styles.headerRight}>
+          <div className={styles.totalLabel}>Total travel time</div>
+          <div className={styles.totalDuration}>{totalDuration}</div>
+        </div>
+      </div>
 
-        <div className={styles.segments}>
-          <RouteLeg selected={leg1} options={availableOptions1} onChange={e => handleChange(0, e)} />
-          <TransferInfo leg1={leg1} leg2={leg2} />
-          <RouteLeg selected={leg2} options={availableOptions2} onChange={e => handleChange(1, e)} />
-          <TransferInfo leg1={leg2} leg2={leg3} />
-          <RouteLeg selected={leg3} options={availableOptions3} onChange={e => handleChange(2, e)} />
-        </div>
+      <div className={styles.segments}>
+        {items.map(({ itemKey, type, ...item }) => (
+          type === 'leg'
+            ? <RouteLeg key={itemKey} {...item} />
+            : <TransferInfo key={itemKey} {...item} />
+        ))}
+      </div>
     </div>
   );
 };

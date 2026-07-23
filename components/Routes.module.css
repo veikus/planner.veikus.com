@@ -1,5 +1,26 @@
 .noSearchResults {
   text-align: center;
   font-size: 14px;
-  color: #333;
+  color: var(--muted);
+}
+
+.showMoreWrapper {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 24px;
+}
+
+.showMoreButton {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 12px 26px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.showMoreButton:hover {
+  background: var(--bg);
 }

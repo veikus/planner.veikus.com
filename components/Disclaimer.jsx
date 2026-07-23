@@ -29,7 +29,7 @@ const Disclaimer = () => {
       <button className={styles.hideButton} onClick={handleHide}>
         Hide
       </button>
-      <h2 className={styles.disclaimerTitle}>Disclaimer:</h2>
+      <h2 className={styles.disclaimerTitle}>Disclaimer</h2>
       <p className={styles.disclaimerText}>
         This website may contain outdated or incorrect information. Flight schedules may be inaccurate or outdated. Before purchasing tickets, please verify the flight availability and schedule with other sources.
       </p>

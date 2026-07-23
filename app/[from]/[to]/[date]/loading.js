@@ -1,14 +1,11 @@
-import Link from 'next/link';
 import styles from '@/app/page.module.css';
 import routeStyles from '@/components/Routes.module.css';
-import { Notification } from '@/components';
+import { Notification, Header } from '@/components';
 
 export default function Loading() {
   return (
     <div className={styles.app}>
-      <h1 className={styles.header}>
-        <Link href="/">Route Planner</Link>
-      </h1>
+      <Header/>
 
       <Notification />
 
