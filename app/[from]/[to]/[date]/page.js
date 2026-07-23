@@ -12,8 +12,8 @@ export async function generateMetadata({ params }) {
   const { from, to, date } = await params;
   const fromAirport = await getAirportByIata(from);
   const toAirport = await getAirportByIata(to);
-  const fromName = fromAirport ? fromAirport.name : params.from;
-  const toName = toAirport ? toAirport.name : params.to;
+  const fromName = fromAirport ? fromAirport.name : from;
+  const toName = toAirport ? toAirport.name : to;
   const title = `${fromName} → ${toName} on ${date}`;
   const description = `Routes from ${fromName} to ${toName} on ${date}`;
 
