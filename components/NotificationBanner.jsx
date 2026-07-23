@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useDismissableBanner } from '@/lib/useDismissableBanner.js';
 import styles from './Notification.module.css';
 
 export default function NotificationBanner({ updatedOn }) {
@@ -8,18 +8,7 @@ export default function NotificationBanner({ updatedOn }) {
   // "data refreshed" notice doesn't also suppress the next real update --
   // that gets its own date, and thus its own not-yet-dismissed key.
   const storageKey = updatedOn ? `notificationHidden:${updatedOn}` : 'notificationHidden';
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem(storageKey) === null) {
-      setVisible(true);
-    }
-  }, [storageKey]);
-
-  const handleDismiss = () => {
-    localStorage.setItem(storageKey, 'true');
-    setVisible(false);
-  };
+  const { visible, dismiss: handleDismiss } = useDismissableBanner(storageKey);
 
   if (!visible) {
     return null;

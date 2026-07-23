@@ -1,30 +1,11 @@
 'use client';
 
-import React, { useSyncExternalStore } from 'react';
+import React from 'react';
+import { useDismissableBanner } from '@/lib/useDismissableBanner.js';
 import styles from './Disclaimer.module.css';
 
-let hideListeners = [];
-
-const subscribe = (listener) => {
-  hideListeners.push(listener);
-  return () => {
-    hideListeners = hideListeners.filter((l) => l !== listener);
-  };
-};
-
-const getSnapshot = () => localStorage.getItem('disclaimerHidden') === null;
-
-// Server-rendered HTML has no access to localStorage, so the banner is
-// hidden during SSR and appears on the client after hydration.
-const getServerSnapshot = () => false;
-
 const Disclaimer = () => {
-  const isVisible = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  const handleHide = () => {
-    localStorage.setItem('disclaimerHidden', 'true');
-    hideListeners.forEach((listener) => listener());
-  };
+  const { visible: isVisible, dismiss: handleHide } = useDismissableBanner('disclaimerHidden');
 
   if (!isVisible) {
     return null;
