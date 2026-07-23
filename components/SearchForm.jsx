@@ -46,7 +46,7 @@ export default function SearchForm({
         <div className={styles.section}>
           {/* FROM */}
           <div className={styles.formGroup}>
-            <label className={styles.label} htmlFor="from">From:</label>
+            <label className={styles.label} htmlFor="from">From</label>
             <select
               id="from"
               value={from}
@@ -63,7 +63,7 @@ export default function SearchForm({
 
           {/* TO */}
           <div className={styles.formGroup}>
-            <label htmlFor="to">Destination:</label>
+            <label className={styles.label} htmlFor="to">Destination</label>
             <select
               id="to"
               value={to}
@@ -79,8 +79,8 @@ export default function SearchForm({
           </div>
 
           {/* DATE */}
-          <div className={styles.formGroup}>
-            <label htmlFor="date">Date:</label>
+          <div className={`${styles.formGroup} ${styles.dateGroup}`}>
+            <label className={styles.label} htmlFor="date">Date</label>
             <input
               type="date"
               id="date"
@@ -110,10 +110,10 @@ export default function SearchForm({
         </p>
 
         {showAdvanced && (
-          <div className={styles.section}>
-            <div className={`${styles.formGroup} ${styles.minTransferTime}`}>
+          <div className={styles.advancedPanel}>
+            <div className={styles.minTransferGroup}>
               <label htmlFor="minTransferTime">
-                {`Minimum Transfer Time (0 – ${MAX_TRANSFER_HOURS} h):`}
+                {`Min. transfer time (0–${MAX_TRANSFER_HOURS}h)`}
               </label>
               <input
                 type="number"
@@ -123,13 +123,10 @@ export default function SearchForm({
                 max={MAX_TRANSFER_HOURS}
                 onChange={e => setMinTransferTime(Number(e.target.value))}
               />
-              {minTransferTime < 3 && (
-                <p className={styles.warningText}>
-                  Warning: short transfer time may lead to missed connections!
-                </p>
-              )}
             </div>
-            <div className={styles.spacer} />
+            {minTransferTime < 3 && (
+              <p className={styles.warningText}>⚠ Short transfer time may lead to missed connections</p>
+            )}
           </div>
         )}
       </form>

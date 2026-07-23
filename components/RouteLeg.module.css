@@ -1,42 +1,101 @@
 .leg {
   flex: 1;
-
-  min-width: 150px;
-  box-sizing: border-box;
-  padding: 10px;
-
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
 }
 
-.title {
-  font-size: 16px;
-  font-weight: bold;
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+}
+
+.sideEnd {
+  align-items: flex-end;
+}
+
+.time {
+  font-family: var(--font-heading);
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.timeWithBadge {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.dayBadge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.code {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.middle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 14px;
+}
+
+.durationLabel {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.line {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  position: relative;
+}
+
+.plane {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 0 4px;
+}
+
+.flightNumber {
   text-align: center;
-
-  margin: 0 0 10px 0;
-}
-
-.text {
-  margin: 5px 0;
-  font-size: 14px;
-}
-
-.textBold {
-  font-weight: bold;
+  font-size: 11px;
+  color: var(--muted);
 }
 
 .legSelect {
   width: 100%;
-  height: 44px;
-  padding: 5px;
-  margin-top: 10px;
-
-  border: 1px solid #ccc;
-  border-radius: 4px;
-
-  font-size: 14px;
-  background-color: #fff;
-  transition: border-color 0.3s;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  padding: 0 8px;
 }

@@ -4,66 +4,126 @@ import React, { useState } from 'react';
 import RouteLeg from './RouteLeg';
 import TransferInfo from './TransferInfo';
 import styles from './Route.module.css';
-import { formatDuration } from '@/lib/timeFormat';
-import { filterConnectingOptions, selectLeg } from '@/lib/routeSelection';
+import { formatDuration, localTime, localDayDiff } from '@/lib/timeFormat';
+import { SHORT_TRANSFER_THRESHOLD_MINUTES } from '@/lib/config';
+import { deriveSelectedLegs } from '@/lib/routeSelection';
 
 const Route = ({ route, minTransferTime = 0 }) => {
-  const options1 = route.legs[0];
-  const options2 = route.legs[1];
-  const options3 = route.legs[2];
+  const legsCount = route.fastestRouteLegs.length;
+  const legOptions = route.legs.slice(0, legsCount);
 
-  // Only the user's explicit choice per leg is state; everything else
-  // (which options are reachable, which leg is actually selected) is
-  // derived below so a broken chain (an earlier pick with no valid next
-  // leg) can never leave a later derivation looking at undefined.
-  const [selectedIds, setSelectedIds] = useState(() => ({
-    0: route.fastestRouteLegs[0]?.id,
-    1: route.fastestRouteLegs[1]?.id,
-    2: route.fastestRouteLegs[2]?.id,
-  }));
+  // Only the user's explicit choice per leg is state; which options are
+  // reachable and which leg ends up selected are both derived fresh on
+  // every render (see deriveSelectedLegs) so a broken chain -- an earlier
+  // pick with no valid next leg -- can never leave a later leg looking at
+  // undefined.
+  const [selectedIds, setSelectedIds] = useState(() =>
+    route.fastestRouteLegs.map(leg => leg.id)
+  );
 
-  const availableOptions1 = options1;
-  const leg1 = selectLeg(availableOptions1, selectedIds[0]);
-  const availableOptions2 = filterConnectingOptions(options2, leg1, minTransferTime);
-  const leg2 = selectLeg(availableOptions2, selectedIds[1]);
-  const availableOptions3 = filterConnectingOptions(options3, leg2, minTransferTime);
-  const leg3 = selectLeg(availableOptions3, selectedIds[2]);
+  const { selectedLegs, availableOptionsPerLeg } = deriveSelectedLegs(
+    legOptions,
+    selectedIds,
+    minTransferTime
+  );
 
-  const calculateTravelTime = () => {
-    const start = leg1.stdUTC;
-    const end = leg3?.staUTC ?? leg2?.staUTC ?? leg1.staUTC;
-
-    return formatDuration(end - start);
-  };
-
-  const handleChange = (legIndex, event) => {
-    const newId = event.target.value;
-
-    setSelectedIds(prev => {
-      const next = { ...prev, [legIndex]: newId };
+  const handleChange = (legIndex, newId) => {
+    setSelectedIds(prevIds => {
+      const nextIds = [...prevIds];
+      nextIds[legIndex] = newId;
       // An earlier leg changing invalidates any explicit choice on later
       // legs -- they re-derive to the first still-valid option instead.
-      for (let i = legIndex + 1; i <= 2; i++) {
-        delete next[i];
+      for (let i = legIndex + 1; i < legsCount; i++) {
+        nextIds[i] = undefined;
       }
-      return next;
+
+      const { selectedLegs: nextSelectedLegs } = deriveSelectedLegs(
+        legOptions,
+        nextIds,
+        minTransferTime
+      );
+      return nextSelectedLegs.map(leg => leg?.id);
     });
   };
 
+  // If a chain breaks, selectedLegs holds undefined from that point on;
+  // render only up to the last leg that actually has a selection.
+  const firstBrokenIndex = selectedLegs.findIndex(leg => !leg);
+  const renderableCount = firstBrokenIndex === -1 ? legsCount : firstBrokenIndex;
+  const isBroken = renderableCount < legsCount;
+
+  const stops = legsCount - 1;
+  const stopsLabel = stops === 0 ? 'Direct' : stops === 1 ? '1 stop' : `${stops} stops`;
+  const totalDuration = isBroken
+    ? null
+    : formatDuration(selectedLegs[legsCount - 1].staUTC - selectedLegs[0].stdUTC);
+
+  const items = [];
+  for (let i = 0; i < renderableCount; i++) {
+    const leg = selectedLegs[i];
+    const options = availableOptionsPerLeg[i].map(option => {
+      const dayOffset = localDayDiff(selectedLegs[0].std, option.std);
+      return {
+        id: option.id,
+        label: `${option.flightNumber} · ${localTime(option.std)}${dayOffset > 0 ? ` (+${dayOffset})` : ''}`,
+      };
+    });
+
+    const legDayDiff = localDayDiff(leg.std, leg.sta);
+    items.push({
+      type: 'leg',
+      itemKey: `leg-${i}`,
+      depTime: localTime(leg.std),
+      depCode: leg.fromAirport,
+      arrTime: localTime(leg.sta),
+      arrCode: leg.toAirport,
+      arrDayBadge: legDayDiff > 0 ? `+${legDayDiff}` : '',
+      flightNumber: leg.flightNumber,
+      durationLabel: formatDuration(leg.flightTime * 60_000),
+      options,
+      selectedId: leg.id,
+      onChange: (e) => handleChange(i, e.target.value),
+    });
+
+    if (i < renderableCount - 1) {
+      const next = selectedLegs[i + 1];
+      const transferMs = next.stdUTC - leg.staUTC;
+      items.push({
+        type: 'transfer',
+        itemKey: `transfer-${i}`,
+        code: leg.toAirport,
+        durationLabel: formatDuration(transferMs),
+        isShort: transferMs / 60_000 < SHORT_TRANSFER_THRESHOLD_MINUTES,
+      });
+    }
+  }
+
   return (
     <div className={styles.route}>
-        <div className={styles.header}>
-          <div>{route.cities.join(' - ')}</div>
-          <div className={styles.travelTime}>{calculateTravelTime()}</div>
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <span className={styles.cities}>{route.cities.join(' → ')}</span>
+          <span className={styles.stopsBadge}>{stopsLabel}</span>
         </div>
+        <div className={styles.headerRight}>
+          <div className={styles.totalLabel}>Total travel time</div>
+          <div className={styles.totalDuration}>{totalDuration ?? '—'}</div>
+        </div>
+      </div>
 
-        <div className={styles.segments}>
-          <RouteLeg selected={leg1} options={availableOptions1} onChange={e => handleChange(0, e)} />
-          <TransferInfo leg1={leg1} leg2={leg2} />
-          <RouteLeg selected={leg2} options={availableOptions2} onChange={e => handleChange(1, e)} />
-          <TransferInfo leg1={leg2} leg2={leg3} />
-          <RouteLeg selected={leg3} options={availableOptions3} onChange={e => handleChange(2, e)} />
-        </div>
+      <div className={styles.segments}>
+        {items.map(({ itemKey, type, ...item }) => (
+          type === 'leg'
+            ? <RouteLeg key={itemKey} {...item} />
+            : <TransferInfo key={itemKey} {...item} />
+        ))}
+      </div>
+
+      {isBroken && (
+        <p className={styles.noConnectionText}>
+          No later flight connects from this selection — try a different option above.
+        </p>
+      )}
     </div>
   );
 };
