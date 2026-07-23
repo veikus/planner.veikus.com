@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Route from './Route';
 import styles from './Routes.module.css';
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 20;
 
 const Routes = ({ keyPrefix, routes }) => {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
