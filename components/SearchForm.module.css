@@ -37,6 +37,7 @@
 .formGroup select,
 .formGroup input[type="date"] {
   width: 100%;
+  min-width: 0;
   height: 46px;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -45,6 +46,11 @@
   color: var(--ink);
   background: var(--surface);
   transition: border-color 0.3s;
+}
+
+.formGroup input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .formGroup select:focus,
