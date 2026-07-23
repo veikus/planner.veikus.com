@@ -20,5 +20,8 @@ services:
       - DB_NAME=planner
       - DB_USER=planner
       - DB_PASS=planner
+      # Shared with planner-data's REVALIDATE_SECRET; change this default
+      # in the actual production deployment.
+      - REVALIDATE_SECRET=changeme
     extra_hosts:
       - "host.docker.internal:host-gateway"

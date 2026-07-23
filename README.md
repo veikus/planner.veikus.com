@@ -11,7 +11,7 @@ The live application can be accessed at [https://planner.veikus.com/](https://pl
 
 ## Development
 1. Install dependencies with `npm install`.
-2. Copy `.env.example` to `.env` and configure database variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`).
+2. Copy `.env.example` to `.env` and configure database variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`). Optionally set `REVALIDATE_SECRET` — it authorizes `POST /api/revalidate`, which the data pipeline ([planner-data](https://github.com/veikus/planner-data)) calls after loading fresh data so the site refreshes without a redeploy.
 3. Start the development server:
    ```bash
    npm run dev
