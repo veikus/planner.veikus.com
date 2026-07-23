@@ -1,13 +1,25 @@
 'use client';
 
+import { bannerKey } from '@/lib/bannerKey.js';
 import { useDismissableBanner } from '@/lib/useDismissableBanner.js';
 import styles from './Notification.module.css';
 
+// All user-visible content lives in these constants and feeds bannerKey,
+// so editing the message automatically re-shows a dismissed banner.
+const BADGE = 'Updated';
+const REFRESHED_PREFIX = 'Timetable refreshed on';
+const LINK_URL = 'https://www.reddit.com/r/WizzAir/comments/1f3h4tf/multistop_route_planner_for_wizzair/';
+const LINK_TEXT = 'Discussion on Reddit';
+
 export default function NotificationBanner({ updatedOn }) {
-  // Keyed by updatedOn (not a single static key) so dismissing today's
-  // "data refreshed" notice doesn't also suppress the next real update --
-  // that gets its own date, and thus its own not-yet-dismissed key.
-  const storageKey = updatedOn ? `notificationHidden:${updatedOn}` : 'notificationHidden';
+  // The data date is part of the fingerprint, so dismissing today's
+  // "data refreshed" notice doesn't suppress the next update's notice.
+  const storageKey = bannerKey(
+    'notificationHidden',
+    ...(updatedOn ? [BADGE, REFRESHED_PREFIX, updatedOn] : []),
+    LINK_TEXT,
+    LINK_URL,
+  );
   const { visible, dismiss: handleDismiss } = useDismissableBanner(storageKey);
 
   if (!visible) {
@@ -19,12 +31,12 @@ export default function NotificationBanner({ updatedOn }) {
       <div className={styles.text}>
         {updatedOn && (
           <>
-            <span className={styles.badge}>Updated</span>
-            Timetable refreshed on {updatedOn} ·{' '}
+            <span className={styles.badge}>{BADGE}</span>
+            {REFRESHED_PREFIX} {updatedOn} ·{' '}
           </>
         )}
-        <a href="https://www.reddit.com/r/WizzAir/comments/1f3h4tf/multistop_route_planner_for_wizzair/" rel="nofollow" target="_blank">
-          Discussion on Reddit
+        <a href={LINK_URL} rel="nofollow" target="_blank">
+          {LINK_TEXT}
         </a>
       </div>
       <button className={styles.dismiss} onClick={handleDismiss} aria-label="Dismiss notification">
