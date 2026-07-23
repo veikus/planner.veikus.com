@@ -3,10 +3,11 @@ export const metadata = {
 };
 
 import Link from 'next/link';
+import styles from './page.module.css';
 
 export default function BadRequest() {
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
+    <div className={styles.wrapper}>
       <h1>400 – Bad Request</h1>
       <p>Invalid parameters provided.</p>
       <p>
