@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "luxon": "^3.6.1",
@@ -24,6 +26,7 @@
     "eslint-config-next": "15.5.7",
     "postcss": "^8",
     "tailwindcss": "^4.0.0",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "^3.2.7"
   }
 }
