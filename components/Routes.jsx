@@ -3,7 +3,7 @@ import Route from './Route';
 import Disclaimer from './Disclaimer';
 import styles from './Routes.module.css';
 
-const Routes = ({keyPrefix, routes}) => {
+const Routes = ({keyPrefix, routes, minTransferTime}) => {
   if (Object.keys(routes).length === 0) {
     return <p className={styles.noSearchResults}>No results, try different route</p>
   }
@@ -13,7 +13,7 @@ const Routes = ({keyPrefix, routes}) => {
       <Disclaimer/>
       {
         routes.map(route => (
-          <Route key={`${keyPrefix}-${route.key}`} route={route} />
+          <Route key={`${keyPrefix}-${route.key}`} route={route} minTransferTime={minTransferTime} />
         ))
       }
     </div>

@@ -98,7 +98,7 @@ export default async function Results({ params, searchParams }) {
         <Link href={nextUrl} rel="nofollow">Next Day →</Link>
       </div>
 
-      <Routes keyPrefix={`${from}-${to}-${date}-${minHours}`} routes={routes}/>
+      <Routes keyPrefix={`${from}-${to}-${date}-${minHours}`} routes={routes} minTransferTime={minHours}/>
     </div>
   );
 }

@@ -5,65 +5,49 @@ import RouteLeg from './RouteLeg';
 import TransferInfo from './TransferInfo';
 import styles from './Route.module.css';
 import { formatDuration } from '@/lib/timeFormat';
+import { filterConnectingOptions, selectLeg } from '@/lib/routeSelection';
 
-const Route = ({ route }) => {
-  const fastestRouteLegs = route.fastestRouteLegs;
+const Route = ({ route, minTransferTime = 0 }) => {
   const options1 = route.legs[0];
   const options2 = route.legs[1];
   const options3 = route.legs[2];
-  const [leg1, setLeg1] = useState(options1.find(leg => leg.id === fastestRouteLegs[0].id));
-  const [leg2, setLeg2] = useState(options2.find(leg => leg.id === fastestRouteLegs[1].id));
-  const [leg3, setLeg3] = useState(options3.find(leg => leg.id === fastestRouteLegs[2].id));
-  const availableOptions1 = options1;
-  const [availableOptions2, setAvailableOptions2] = useState(options2);
-  const [availableOptions3, setAvailableOptions3] = useState(options3);
 
+  // Only the user's explicit choice per leg is state; everything else
+  // (which options are reachable, which leg is actually selected) is
+  // derived below so a broken chain (an earlier pick with no valid next
+  // leg) can never leave a later derivation looking at undefined.
+  const [selectedIds, setSelectedIds] = useState(() => ({
+    0: route.fastestRouteLegs[0]?.id,
+    1: route.fastestRouteLegs[1]?.id,
+    2: route.fastestRouteLegs[2]?.id,
+  }));
+
+  const availableOptions1 = options1;
+  const leg1 = selectLeg(availableOptions1, selectedIds[0]);
+  const availableOptions2 = filterConnectingOptions(options2, leg1, minTransferTime);
+  const leg2 = selectLeg(availableOptions2, selectedIds[1]);
+  const availableOptions3 = filterConnectingOptions(options3, leg2, minTransferTime);
+  const leg3 = selectLeg(availableOptions3, selectedIds[2]);
 
   const calculateTravelTime = () => {
     const start = leg1.stdUTC;
-    const end = leg3?.staUTC || leg2?.staUTC || leg1.staUTC;
+    const end = leg3?.staUTC ?? leg2?.staUTC ?? leg1.staUTC;
 
     return formatDuration(end - start);
   };
 
   const handleChange = (legIndex, event) => {
     const newId = event.target.value;
-    const newSelection = route.legs[legIndex].find(leg => leg.id === newId);
 
-    let newLeg1 = leg1;
-    let newLeg2 = leg2;
-    let newLeg3 = leg3;
-    let newAvailableOptions2 = availableOptions2;
-    let newAvailableOptions3 = availableOptions3;
-
-    if (legIndex === 0) {
-      newLeg1 = newSelection;
-      newAvailableOptions2 = options2.filter(leg => leg.stdUTC > newLeg1.staUTC);
-      newLeg2 = newAvailableOptions2[0];
-      newAvailableOptions3 = options3.filter(leg => leg.stdUTC > newLeg2.staUTC);
-      newLeg3 = newAvailableOptions3[0];
-
-      setLeg1(newLeg1);
-      setLeg2(newLeg2);
-      setLeg3(newLeg3);
-      setAvailableOptions2(newAvailableOptions2);
-      setAvailableOptions3(newAvailableOptions3);
-    }
-
-    if (legIndex === 1) {
-      newLeg2 = newSelection;
-      newAvailableOptions3 = options3.filter(leg => leg.stdUTC > newLeg2.staUTC);
-      newLeg3 = newAvailableOptions3[0];
-
-      setLeg2(newLeg2);
-      setLeg3(newLeg3);
-      setAvailableOptions3(newAvailableOptions3);
-    }
-
-    if (legIndex === 2) {
-      newLeg3 = newSelection;
-      setLeg3(newLeg3);
-    }
+    setSelectedIds(prev => {
+      const next = { ...prev, [legIndex]: newId };
+      // An earlier leg changing invalidates any explicit choice on later
+      // legs -- they re-derive to the first still-valid option instead.
+      for (let i = legIndex + 1; i <= 2; i++) {
+        delete next[i];
+      }
+      return next;
+    });
   };
 
   return (
