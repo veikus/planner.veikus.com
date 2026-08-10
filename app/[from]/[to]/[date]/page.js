@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon';
 import { pathFinder } from '@/lib/susanin';
-import { getAirports, airportExists, getAirportByIata, getScheduleDateRange, getScheduleDateBounds } from '@/lib/db.js';
+import { getAirports, airportExists, getAirportByIata, getScheduleDateBounds } from '@/lib/db.js';
 import { SearchForm, Routes, BuyMeACoffee, Notification, Disclaimer, Header } from '@/components';
 import Link from 'next/link';
 import { redirect, notFound } from 'next/navigation';
 import styles from '@/app/page.module.css';
 import { parseMinTransferHours } from '@/lib/config.js';
+import { isValidDate, isWithinScheduleRange } from '@/lib/dateRange.js';
 
 export const revalidate = 86_400;
 
@@ -35,20 +36,6 @@ export default async function Results({ params, searchParams }) {
 
   const airports = await getAirports();
   const { minDate, maxDate } = await getScheduleDateBounds();
-
-  function isValidDate(value) {
-    const d = new Date(value);
-    return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
-  }
-
-  // Buffered by a day on each side since `date` is a calendar day in the
-  // origin/destination airport's local timezone, not UTC.
-  async function isWithinScheduleRange(value) {
-    const { minUTC, maxUTC } = await getScheduleDateRange();
-    const requestedUTC = new Date(`${value}T00:00:00Z`).getTime();
-    const bufferMs = 24 * 60 * 60 * 1000;
-    return requestedUTC >= minUTC - bufferMs && requestedUTC <= maxUTC + bufferMs;
-  }
 
   if (
     !isValidDate(date) ||

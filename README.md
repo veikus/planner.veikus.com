@@ -23,6 +23,10 @@ Alternatively you can run the project with Docker Compose:
 docker-compose up -d
 ```
 
+## API
+- `GET /api/airports` — every airport, `[{ iata, name }, ...]` ordered by name.
+- `GET /api/routes/:from/:to/:date?minTransferTime=3` — routes between two IATA codes for a given `YYYY-MM-DD` date, grouped the same way as the results page. `minTransferTime` is in hours and defaults to `3`. Returns `{ from, to, date, minTransferTime, routes }`, or `400`/`404` with `{ error }` for an invalid date/`minTransferTime`/unknown airport.
+
 ## Building for Production
 ```
 npm run build
